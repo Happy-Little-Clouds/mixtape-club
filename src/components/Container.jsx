@@ -5,7 +5,7 @@ import Landing from "./Landing.jsx";
 import Login from "./Login.jsx";
 import CreateMixtapes from "./CreateMixtapes.jsx";
 import MixtapePlayer from "./MixtapePlayer.jsx";
-import Chatroom from "./Chatroom.jsx"
+import Chat from "./Chat.jsx"
 
 /** Container component handles the front-end routing/rendering of the app and renders the Login,
  * CreateMixtapes, and MixtapePlayer components at their respective routes. Container is a child 
@@ -19,7 +19,6 @@ function Container(props) {
     return (
             <section className="route-section">
                 <Switch location={location}>
-                console.log(location);
                     <Route exact path="/" component={Login} />
                     
                     <Route path='/create-mixtapes'
@@ -31,8 +30,8 @@ function Container(props) {
                     <Route path='/mixtape-player/:id' component={MixtapePlayer}
                     render={(props) => <MixtapePlayer {...props} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} queryParam={queryParam}/>} />
 
-                    <Route path='/chatroom' component={Chatroom}
-                    render={(props) => <Chatroom {...props}/>} />
+                    <Route path='/chatroom'
+                    render={(props) => <Chat />} />
 
                     <Route path='/login'
                     render={(props) => <Login {...props} />} />
