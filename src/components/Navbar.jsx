@@ -27,6 +27,9 @@ const Navigation = (props) => {
                     <li className="nav-item">
                         {isAuthenticated ? <Link className="nav-link" to="/login" onClick={logout}>Logout</Link> : <Link to="/login"  className="nav-link">Login</Link>}
                     </li>
+                    <li className="nav-item">
+                        <Link to="/concerts" className="nav-link">Concerts</Link>
+                    </li>
                 </ul>
                 
   </div>

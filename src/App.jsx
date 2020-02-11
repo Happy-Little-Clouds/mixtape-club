@@ -14,6 +14,7 @@ import SearchList from './components/SearchList.jsx';
 import PlaylistBuilderList from './components/PlaylistBuilderList.jsx';
 import PlaylistImageSelector from './components/PlaylistImageSelector.jsx';
 import { cpus } from "os";
+import Concerts from "./components/Concerts.jsx"
 
 import LisaFrankenstein from './assets/img/tapes/lisa-frankenstein-tape.gif';
 import GreenTape from './assets/img/tapes/green-tape.gif';
