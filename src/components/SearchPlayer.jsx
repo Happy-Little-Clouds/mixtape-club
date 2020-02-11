@@ -38,6 +38,25 @@ const SearchPlayer = (props) => {
         marginTop: '0.5rem',
     }
 
+    // start recording user option
+    const initiateRecordUser = () => {
+        //check for user permissions
+        //get user permissions
+        //.then take this 'stream'
+        //change the current state to recording
+        //and init a new media recording
+        //with chunks
+        //on click do some chunk binding
+        //set up a catch that an error occured
+    };
+    
+    // stop recording user option
+    // will need to change state in big app component when start
+    // on stop, will need to upload the recording (blob) at route and write asset
+    // then deal with playback 
+    // how is a recording on a playlist played back in the other playback component
+
+
     return (
         <div>
             <div style={vidStyle}>
@@ -55,9 +74,9 @@ const SearchPlayer = (props) => {
                 <div className="row col-11 col-md-3 player-button-row mx-auto">
                     {
                         recordUser ?
-                            <button className="btn btn-light col-4 col-md-7" id="stop-record-user" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: 'red' }}><FontAwesomeIcon style={{ color: 'red' }} icon={faPlus} /> Record Audio</button>
+                            <button className="btn btn-light col-4 col-md-7" id="stop-record-user" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: 'red' }}><FontAwesomeIcon style={{ color: 'red' }} icon={faPlus} /> Record</button>
                             :
-                            <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }}><FontAwesomeIcon style={{ color: '#17a2b8' }} icon={faPlus} /> Record Audio</button>
+                            <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }}><FontAwesomeIcon style={{ color: '#17a2b8' }} icon={faPlus} /> Record</button>
                     }
                     <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }} onClick={() => onPassToSideA(selectedResult)}><FontAwesomeIcon style={{ color: '#17a2b8' }} icon={faPlus} /> Side A</button>
                     <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }} onClick={() => onPassToSideB(selectedResult)}><FontAwesomeIcon style={{ color: '#17a2b8'}} icon={faPlus}/> Side B</button>
