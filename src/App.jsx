@@ -27,7 +27,37 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            searchResults: [{ snippet: { title: '' }, id: { videoId: '4D2qcbu26gs' }}],
+            searchResults: 
+            [{ snippet: { title: '' }, id: { videoId: '4D2qcbu26gs' },
+                spotify: {
+                    artistName: "Barenaked Ladies",
+                    artistId: "0dEvJpkqhrcn64d3oI8v79",
+                    artistUri: "spotify:artist:0dEvJpkqhrcn64d3oI8v79",
+                    albumId: "0DuFDnZcj7B4R0Jik1aDmY",
+                    albumReleaseDate: "1998-07-07",
+                    albumHREF: "https://api.spotify.com/v1/albums/0DuFDnZcj7B4R0Jik1aDmY",
+                    albumName: "Stunt (20th Anniversary Edition)",
+                    albumImages: [
+                        {
+                            height: 640,
+                            url: "https://i.scdn.co/image/ab67616d0000b2737d2055190ae60ffa4c74d13c",
+                            width: 640,
+                        },
+                        {
+                            height: 300,
+                            url: "https://i.scdn.co/image/ab67616d00001e027d2055190ae60ffa4c74d13c",
+                            width: 300
+                        },
+                        {
+                            height: 64,
+                            url: "https://i.scdn.co/image/ab67616d000048517d2055190ae60ffa4c74d13c",
+                            width: 64
+                        }
+
+                    ],
+                    trackExternalIds: { isrc: "USRE19800261" }
+                }
+        }],
             player: null,
             tapeImages: [{ image: LisaFrankenstein, name: 'Lisa Frankenstein' }, { image: GreenTape, name: 'green' }, { image: OrangeTape, name: 'orange' }, { image: BlueTape, name: 'blue' }, { image: RedTape, name: 'red' }, { image: PinkTape, name: 'pink' }],
             builderImage: { image: BlueTape, name: 'blue' },
@@ -167,8 +197,20 @@ class App extends React.Component {
     
     onSearch(){
         let query = this.state.query;
-        axios.post('/search', {query})
+        let spotifyResults = {};
+        axios.post('/spotifyData', { query })
+        .then(response => {
+            spotifyResults = response.data
+            console.log(spotifyResults.albumImages, 'spotify response');
+            return axios.post('/search', { query });
+        })
+        .catch(err => {
+            console.log(err, 'err from spotify')
+        })      
         .then((response)=>{
+            response.data.items.map(song=>{
+                song.spotify = spotifyResults;
+            })
             this.setState({
                 searchResults : response.data.items,
                 selectedResult : response.data.items[0],
@@ -177,6 +219,7 @@ class App extends React.Component {
         .catch((err)=> {
             console.error('Error searching:', err)
         })
+        
     }
 
     /**

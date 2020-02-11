@@ -16,7 +16,7 @@
     {
         "type": "node",
         "request": "launch",
-        "name": "Launch Program",
+        "name": "spotify helper",
         "program": "${workspaceFolder}/server/spotifyHelper.js",
         "skipFiles": [
             "<node_internals>/**"

@@ -24,6 +24,78 @@ require('dotenv').config();
  * app rename to aid in functioncalls
  */
 
+//some dumb shit i need for spotify
+let token = '';
+const client_id = '2d6b8ee81c784fa58be76068c3a0fad8'; // Your client id
+const client_secret = '954a2450ce4f4c82a4966d3828c87f90'; // Your secret
+var request = require('request'); // "Request" library
+// your application requests authorization
+var authOptions = {
+  url: 'https://accounts.spotify.com/api/token',
+  headers: {
+    'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+  },
+  form: {
+    grant_type: 'client_credentials'
+  },
+  json: true
+};
+//this updates our token for spotify requests. idk if it ever timesout after
+request.post(authOptions, function (error, response, body) {
+  if (!error && response.statusCode === 200) {
+    console.log('spotify code ran and token grabbed appropriately')
+
+    // use the access token to access the Spotify Web API
+    token = body.access_token;
+    // var options = {
+    //   url: 'https://api.spotify.com/v1/users/jmperezperez',
+    //   headers: {
+    //     'Authorization': 'Bearer ' + token
+    //   },
+    //   json: true
+    // };
+    // request.get(options, function (error, response, body) {
+    //   console.log(body);
+    // });
+  }
+});
+//delete when done
+// setTimeout(() => {
+//   const query = "one week"
+//   axios({
+//     url: 'https://api.spotify.com/v1/search',
+//     headers: {
+//       'Authorization': 'Bearer ' + token
+//     },
+//     params:{
+//       "q": query,
+//       "type" : "track",
+//       "limit" : "1"
+//     }
+
+//   })
+//     .then(({data}) => {
+//       console.log(data);
+//       const artistName = data.tracks.items[0].artists[0].name
+//       const artistId = data.tracks.items[0].artists[0].id
+//       const artistUri = data.tracks.items[0].artists[0].uri
+//       const albumId = data.tracks.items[0].album.id
+//       const albumReleaseDate = data.tracks.items[0].album.release_date
+//       const albumHREF = data.tracks.items[0].album.href
+//       const albumName = data.tracks.items[0].album.name
+//       const albumImages = data.tracks.items[0].album.images
+//       const trackExternalIds = data.tracks.items[0].external_ids
+
+//       debugger;
+//     })
+//     .catch(x => console.log(x));
+
+// }, 6000)
+//end of dumb spotify shit
+
+
+
+
 const app = express();
 
 /**
@@ -292,6 +364,40 @@ app.post('/search', (req, res) => {
     });
 });
 
+app.post('/spotifyData',(req, res)=>{
+  const query = req.body.query //take song query from this
+  // debugger;
+  axios({
+    url: 'https://api.spotify.com/v1/search',
+    headers: {
+      'Authorization': 'Bearer ' + token
+    },
+    params: {
+      "q": query,
+      "type": "track",
+      "limit": "1"
+    }
+
+  })
+    .then(({ data }) => {
+      console.log(data);
+      const spotifyData = {
+        artistName : data.tracks.items[0].artists[0].name,
+        artistId : data.tracks.items[0].artists[0].id,
+        artistUri : data.tracks.items[0].artists[0].uri,
+        albumId : data.tracks.items[0].album.id,
+        albumReleaseDate : data.tracks.items[0].album.release_date,
+        albumHREF : data.tracks.items[0].album.href,
+        albumName : data.tracks.items[0].album.name,
+        albumImages : data.tracks.items[0].album.images,
+        trackExternalIds : data.tracks.items[0].external_ids,
+      }
+      res.status(200);
+      res.send(spotifyData);
+    })
+    .catch(x => console.log(x));
+
+})
 const PORT = 3000;
 
 app.listen(PORT, () => console.log(`Your app is sparkling on port ${PORT}!`));
