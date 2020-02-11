@@ -12,6 +12,7 @@ const findOrCreate = require('mongoose-findorcreate');
  * Connection made using mongoose to connect to mongoDB stored on local machine
  */
 
+mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://localhost/mtc', { useNewUrlParser: true });
 
 /**
