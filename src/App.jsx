@@ -379,7 +379,7 @@ class App extends React.Component {
                     userRecording: data,
                     selectedResult: {
                         snippet: {
-                            title: 'My recording',
+                            title: 'my recording',
                         },
                         id: {
                             videoId: data,
@@ -396,9 +396,7 @@ class App extends React.Component {
     };
 
     onUserRecordingEnded() {
-        this.setState({
-            playing: false,
-        });
+        console.log('user recording end');
     }
 
 
