@@ -42,19 +42,19 @@ class Chat extends Component{
       return (
         <div className="chat-container">
         <div>
-            <div style={{marginTop: 75}}>
+            <div style={{marginTop: 75, textAlign: 'center'}}>
                 <div>
-                    <div className="inner-container card-title" style={{textAlign: 'center', fontSize: '30px'}}>Chatroom
-                        <div className="inner-container card-title" style={{textAlign: 'center', fontSize: '15px'}}>Share your playlists!</div>
+                    <div className="card-title" style={{textAlign: 'center', fontSize: '30px'}}>Chatroom
+                        <div className="inner-container card-title" style={{textAlign: 'center', fontSize: '15px'}}>Talk about your favorite tunes!</div>
                         <hr/>
-                        <div style={{height: 200, overflow: 'scroll'}}>
+                        <div style={{height: 200, overflow: 'auto', display:'flex', flexDirection:'column-reverse', backgroundColor: '#e6f7fa', textAlign: 'left', fontSize: '15px'}}>
                             {this.state.messages.map(message => {
                                 return (
-                                    <div>
+                                    <div style={{padding: '10px 0 10px 10px'}}>
                                       {message.author}: {message.message}
                                     </div>
-                                )
-                            })}
+                                );
+                            }).reverse()}
                         </div>
 
                     </div>
@@ -63,7 +63,7 @@ class Chat extends Component{
                         <br/>
                         <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({message: ev.target.value})}/>
                         <br/>
-                        <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
+                        <button onClick={this.sendMessage} className="btn btn-primary form-control" style={{backgroundColor: '#17a2b8', border: '#17a2b8'}}>Send</button>
                     </div>
                 </div>
             </div>
