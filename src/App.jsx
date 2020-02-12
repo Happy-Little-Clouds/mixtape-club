@@ -55,7 +55,7 @@ class App extends React.Component {
         this.onReady = this.onReady.bind(this);
         this.startRecordUser = this.startRecordUser.bind(this);
         this.stopRecordUser = this.stopRecordUser.bind(this);
-        this.userRecordEnd = this.userRecordEnd.bind(this);
+        this.onUserRecordingEnded = this.onUserRecordingEnded.bind(this);
     
         this.onSelectTapeImage = this.onSelectTapeImage.bind(this);
         this.onTapeLabelChange = this.onTapeLabelChange.bind(this);
@@ -362,40 +362,40 @@ class App extends React.Component {
         });
     }
 
-    stopRecordUser() {
+    stopRecordUser(blob) {
         console.log('stopping');
         this.setState({
             recordUser: false,
         });
-        // const formData = new FormData();
-        // formData.append('name', 'recording');
-        // formData.append('recording', blob);
-        // axios.post('/upload', formData, {
-        //     'Content-Type': 'multipart/form-data',
-        // })
-        //     .then(({ data }) => {
-        //         this.setState({
-        //             userRecording: data,
-        //             selectedResult: {
-        //                 snippet: {
-        //                     title: 'My recording',
-        //                 },
-        //                 id: {
-        //                     videoId: data,
-        //                 },
-        //             },
-        //             opts: {
-        //                 userRecording: true,
-        //             },
-        //         });
-        //         this.state.userRecording;
-        //         debugger;
-        //     })
-        //     .catch(err => console.log(err));
+        const formData = new FormData();
+        formData.append('name', 'recording');
+        formData.append('recording', blob);
+        axios.post('/upload', formData, {
+            'Content-Type': 'multipart/form-data',
+        })
+            .then(({ data }) => {
+                debugger;
+                this.setState({
+                    userRecording: data,
+                    selectedResult: {
+                        snippet: {
+                            title: 'My recording',
+                        },
+                        id: {
+                            videoId: data,
+                        },
+                    },
+                    opts: {
+                        userRecording: true,
+                    },
+                });
+                this.state.userRecording;
+                debugger;
+            })
+            .catch(err => console.log(err));
     };
 
-    userRecordEnd() {
-        console.log(false);
+    onUserRecordingEnded() {
         this.setState({
             playing: false,
         });
@@ -408,7 +408,7 @@ class App extends React.Component {
             <Router>
                 <div className="App">
                     <Navigation logout={this.logout} isAuthenticated={isAuthenticated} userName={userName} />
-                    <Container recordUser={recordUser} userRecordEnd={this.userRecordEnd} startRecordUser={this.startRecordUser} stopRecordUser={this.stopRecordUser} authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onChange={this.onChange} onSearch={this.onSearch} onResultClick={this.onResultClick} playing={playing} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} queryParam={queryParam} googleId={googleId}/>
+                    <Container onUserRecordingEnded={this.onUserRecordingEnded} recordUser={recordUser} userRecordEnd={this.userRecordEnd} startRecordUser={this.startRecordUser} stopRecordUser={this.stopRecordUser} authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onChange={this.onChange} onSearch={this.onSearch} onResultClick={this.onResultClick} playing={playing} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} queryParam={queryParam} googleId={googleId}/>
 
                 </div>
             </Router>
