@@ -47,7 +47,16 @@ class Chat extends Component{
                     <div className="card-title" style={{textAlign: 'center', fontSize: '30px'}}>Chatroom
                         <div className="inner-container card-title" style={{textAlign: 'center', fontSize: '15px'}}>Talk about your favorite tunes!</div>
                         <hr/>
-                        <div style={{height: 200, overflow: 'auto', display:'flex', flexDirection:'column-reverse', backgroundColor: '#e6f7fa', textAlign: 'left', fontSize: '15px'}}>
+                        <div style={{ 
+                            height: 200, 
+                            padding: '2',
+                            overflow: 'auto', 
+                            display:'flex', 
+                            flexDirection:'column-reverse', 
+                            backgroundColor: '#e6f7fa', 
+                            textAlign: 'left', 
+                            fontSize: '15px'   ,
+                            boxShadow: '.2rem .2rem .2rem rgba(0, 0, 0, .3)'}}>
                             {this.state.messages.map(message => {
                                 return (
                                     <div style={{padding: '10px 0 10px 10px'}}>
