@@ -42,12 +42,12 @@ class Chat extends Component{
       return (
         <div className="chat-container">
         <div>
-            <div style={{marginTop: 100}}>
+            <div style={{marginTop: 75}}>
                 <div>
-                    <div>
-                        <div className="inner-container card-title">Chatroom</div>
+                    <div className="inner-container card-title" style={{textAlign: 'center', fontSize: '30px'}}>Chatroom
+                        <div className="inner-container card-title" style={{textAlign: 'center', fontSize: '15px'}}>Share your playlists!</div>
                         <hr/>
-                        <div className="inner-chat-scroll" style={{height: 300}}>
+                        <div style={{height: 200, overflow: 'scroll'}}>
                             {this.state.messages.map(message => {
                                 return (
                                     <div>
@@ -69,6 +69,35 @@ class Chat extends Component{
             </div>
         </div>
     </div>
+        //   <div className="chat-container" style={{margin: 200}}>
+        //       <div className="row login-card">
+        //           <div className="col-4 row col-9 col-md-6 d-flex align-items-center">
+        //               <div className="card">
+        //                   <div className="card-body">
+        //                       <div className="card-title">Global Chat</div>
+        //                       <hr/>
+        //                       <div className="messages inner-chat-scroll">
+        //                           {this.state.messages.map(message => {
+        //                               return (
+        //                                   <div>
+        //                                     {message.author}: {message.message}
+        //                                   </div>
+        //                               )
+        //                           })}
+        //                       </div>
+
+        //                   </div>
+        //                   <div className="card-footer">
+        //                       <input type="text" placeholder="Username" value={this.state.username} onChange={ev => this.setState({username: ev.target.value})} className="form-control"/>
+        //                       <br/>
+        //                       <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({message: ev.target.value})}/>
+        //                       <br/>
+        //                       <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
+        //                   </div>
+        //               </div>
+        //           </div>
+        //       </div>
+        //   </div>
       );
   }
 }

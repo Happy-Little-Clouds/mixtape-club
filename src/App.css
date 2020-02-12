@@ -357,12 +357,4 @@ footer {
   flex-direction: row;
 }
 
-.inner-chat-scroll {
-  width: 300px;
-  height: 500px;
-  border: 2px solid #0000;
-  padding: 20px;
-  overflow-y: scroll;
-}
-
 }
