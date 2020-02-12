@@ -9,7 +9,7 @@ import { faPlay, faPause, faPlus } from '@fortawesome/free-solid-svg-icons'
  */
 
 const SearchPlayer = (props) => {
-    const { onReady, onPlayVideo, onPauseVideo, playing, selectedResult, onPassToSideA, onPassToSideB, recordUser, startRecordUser, stopRecordUser} = props;
+    const { onReady, onPlayVideo, onPauseVideo, playing, selectedResult, onPassToSideA, onPassToSideB, recordUser, startRecordUser, stopRecordUser, onUserRecordingEnded } = props;
 
     let title = selectedResult.snippet.title.replace(/&amp;/g, '&');
     title = title.replace(/&#39;/g, '\'');
@@ -55,7 +55,6 @@ const SearchPlayer = (props) => {
     // then deal with playback 
     // how is a recording on a playlist played back in the other playback component
     
-
     const initiateStopRecordUser = (chunks, mediaRecord) => {
         mediaRecord.onstop = () => {
             const blob = new Blob(chunks, { 'type': 'audio/ogg; codecs=opus' });
@@ -96,8 +95,16 @@ const SearchPlayer = (props) => {
         }
     }
 
-    // const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
+    // URL = window.URL || window.webkitURL;
+
+    // let gumStream; 						//stream from getUserMedia()
+    // let rec; 							//Recorder.js object
+    // let input; 							//MediaStreamAudioSourceNode we'll be recording
+
+    // // shim for AudioContext when it's not avb. 
+    // let AudioContext = window.AudioContext || window.webkitAudioContext;
+    // let audioContext //audio context to help us record
 
     // const recorder = new Recorder(audioContext, {
     //     // An array of 255 Numbers
@@ -107,30 +114,92 @@ const SearchPlayer = (props) => {
     // });
 
     // const initiateRecordUser = () => {
-    //     navigator.mediaDevices.getUserMedia({ audio: true })
-    //         .then(stream => {
-    //             recorder.init(stream)
-    //             startRecording();
-    //         })
-    //         .catch(err => console.log('Uh oh... unable to get stream...', err));
+    //     navigator.mediaDevices.getUserMedia({audio: true})
+    //     .then((stream) => {
+    //         startRecording(stream);
+    //     }); 
     // }
 
-    // const startRecording = () => {
-    //     recorder.start()
-    //         .then(() => {
-    //             startRecordUser();
-    //         });
-    // }
+    // const startRecording = (stream) => {
+    //     startRecordUser();
+    //     console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
+    //     audioContext = new AudioContext();
+    //     /*  assign to gumStream for later use  */
+    //     gumStream = stream;
 
-    // const initiateStopRecording = () => {
-    //     recorder.stop()
-    //         .then(({ blob, buffer }) => {
-    //             console.log(blob);
-    //             blob = blob;
-    //             stopRecordUser(blob);
-    //         })
-    //     };
+    //     /* use the stream */
+    //     input = audioContext.createMediaStreamSource(stream);
+    //     rec = new Recorder(input, { numChannels: 1 });
+
+    //     //start the recording process
+    //     rec.record();
+
+    //     console.log("Recording started");
+    // };
+
+    // const initiateStopRecordUser = () => {
+    //     //tell the recorder to stop the recording
+    //     rec.stop();
+
+    //     //stop microphone access
+    //     gumStream.getAudioTracks()[0].stop();
+    //     //create the wav blob and pass it on to createDownloadLink
+    //     rec.exportWAV(createDownloadLink);
+    // };
     
+    // const createDownloadLink = (blob) => {
+
+    //     stopRecordUser(blob);
+    //     blob;
+    //     debugger;
+    //     let url = URL.createObjectURL(blob);
+    //     let au = document.createElement('audio');
+    //     let li = document.createElement('li');
+    //     let link = document.createElement('a');
+
+    //     //name of .wav file to use during upload and download (without extendion)
+    //     let filename = new Date().toISOString();
+
+    //     //add controls to the <audio> element
+    //     au.controls = true;
+    //     au.src = url;
+
+    //     //save to disk link
+    //     link.href = url;
+    //     link.download = filename + ".wav"; //download forces the browser to donwload the file using the  filename
+    //     link.innerHTML = "Save to disk";
+
+    //     //add the new audio element to li
+    //     li.appendChild(au);
+
+    //     //add the filename to the li
+    //     li.appendChild(document.createTextNode(filename + ".wav "))
+
+    //     //add the save to disk link to li
+    //     li.appendChild(link);
+
+    //     // //upload link
+    //     // var upload = document.createElement('a');
+    //     // upload.href = "#";
+    //     // upload.innerHTML = "Upload";
+    //     // upload.addEventListener("click", function (event) {
+    //     //     var xhr = new XMLHttpRequest();
+    //     //     xhr.onload = function (e) {
+    //     //         if (this.readyState === 4) {
+    //     //             console.log("Server returned: ", e.target.responseText);
+    //     //         }
+    //     //     };
+    //     //     var fd = new FormData();
+    //     //     fd.append("audio_data", blob, filename);
+    //     //     xhr.open("POST", "upload.php", true);
+    //     //     xhr.send(fd);
+    //     // })
+    //     // li.appendChild(document.createTextNode(" "))//add a space in between
+    //     // li.appendChild(upload)//add the upload link to li
+
+    //     //add the li element to the ol
+    //     recordingsList.appendChild(li);
+    // }
 
     return (
         <div>
