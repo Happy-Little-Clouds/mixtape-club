@@ -14,7 +14,7 @@ import Chat from "./Chat.jsx"
 
 function Container(props) {
 
-    const { isAuthenticated, authenticateUser, location, searchResults, onChange, onSearch, onPlayVideo, onReady, onPauseVideo, onResultClick, playing, selectedResult, tapeImages, builderImage, selectImage, tapeLabel, onLabelChange, onPassToSideA, sideA, onPassToSideB, sideB, displayImageSelector, onSaveImage, onDeckSideA, onDeckSideB, onSavePlaylist, tapeBackgroundColor, onDelete, queryParam, googleId, recordUser } = props;
+    const { startRecordUser, stopRecordUser, isAuthenticated, authenticateUser, location, searchResults, onChange, onSearch, onPlayVideo, onReady, onPauseVideo, onResultClick, playing, selectedResult, tapeImages, builderImage, selectImage, tapeLabel, onLabelChange, onPassToSideA, sideA, onPassToSideB, sideB, displayImageSelector, onSaveImage, onDeckSideA, onDeckSideB, onSavePlaylist, tapeBackgroundColor, onDelete, queryParam, googleId, recordUser } = props;
    
     return (
             <section className="route-section">
@@ -22,7 +22,7 @@ function Container(props) {
                     <Route exact path="/" component={Login} />
                     
                     <Route path='/create-mixtapes'
-                    render={(props) => isAuthenticated ? (<CreateMixtapes {...props} searchResults={searchResults} recordUser={recordUser} authenticateUser={authenticateUser} onReady={onReady} onSearch={onSearch} onChange={onChange} onPauseVideo={onPauseVideo} onPlayVideo={onPlayVideo} onResultClick={onResultClick} playing={playing} selectedResult={selectedResult} tapeImages={tapeImages} builderImage={builderImage} selectImage={selectImage} tapeLabel={tapeLabel} onLabelChange={onLabelChange} onPassToSideA={onPassToSideA} sideA={sideA} onPassToSideB={onPassToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={onSaveImage} onSavePlaylist={onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={onDelete} />) : (<Login {...props} />) } />
+                    render={(props) => isAuthenticated ? (<CreateMixtapes {...props} startRecordUser={startRecordUser} stopRecordUser={stopRecordUser} searchResults={searchResults} recordUser={recordUser} authenticateUser={authenticateUser} onReady={onReady} onSearch={onSearch} onChange={onChange} onPauseVideo={onPauseVideo} onPlayVideo={onPlayVideo} onResultClick={onResultClick} playing={playing} selectedResult={selectedResult} tapeImages={tapeImages} builderImage={builderImage} selectImage={selectImage} tapeLabel={tapeLabel} onLabelChange={onLabelChange} onPassToSideA={onPassToSideA} sideA={sideA} onPassToSideB={onPassToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={onSaveImage} onSavePlaylist={onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={onDelete} />) : (<Login {...props} />) } />
 
                     <Route path='/mixtape-player'
                     render={(props) => <MixtapePlayer {...props} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} queryParam={queryParam} googleId={googleId}/>} />
