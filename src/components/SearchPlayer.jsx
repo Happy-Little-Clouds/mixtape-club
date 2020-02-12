@@ -8,7 +8,7 @@ import { faPlay, faPause, faPlus } from '@fortawesome/free-solid-svg-icons'
  */
 
 const SearchPlayer = (props) => {
-    const { onReady, onPlayVideo, onPauseVideo, playing, selectedResult, onPassToSideA, onPassToSideB, recordUser } = props;
+    const { onReady, onPlayVideo, onPauseVideo, playing, selectedResult, onPassToSideA, onPassToSideB, recordUser, startRecordUser, stopRecordUser } = props;
 
     let title = selectedResult.snippet.title.replace(/&amp;/g, '&');
     title = title.replace(/&#39;/g, '\'');
@@ -39,23 +39,61 @@ const SearchPlayer = (props) => {
     }
 
     // start recording user option
-    const initiateRecordUser = () => {
-        //check for user permissions
-        //get user permissions
-        //.then take this 'stream'
-        //change the current state to recording
-        //and init a new media recording
-        //with chunks
-        //on click do some chunk binding
-        //set up a catch that an error occured
-    };
+    // check for user permissions
+    // get user permissions
+    // .then take this 'stream'
+    // change the current state to recording
+    // and init a new media recording
+    // with chunks
+    // on click do some chunk binding
+    // set up a catch that an error occured
     
     // stop recording user option
     // will need to change state in big app component when start
     // on stop, will need to upload the recording (blob) at route and write asset
     // then deal with playback 
     // how is a recording on a playlist played back in the other playback component
+    
+    const initiateStopRecordUser = (chunks, mediaRecord) => {
+        mediaRecord.onstop = () => {
+            const blob = new Blob(chunks, { 'type': 'audio/ogg; codecs=opus' });
+            stopRecordUser(blob);
+            const audio = document.getElementById('user-recording');
+            const audioURL = window.URL.createObjectURL(blob);
+            audio.setAttribute('controls', '');
+            audio.addEventListener('ended', () => {
+                onUserRecordingEnded();
+            });
+            audio.src = audioURL;
+        }
+        mediaRecord.stop();
+    }
 
+    const initiateRecordUser = () => {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            console.log('getUserMedia supported.');
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then((stream) => {
+                    startRecordUser();
+                    const mediaRecord = new MediaRecorder(stream);
+                    mediaRecord.start();
+
+                    const chunks = [];
+                    mediaRecord.ondataavailable = (event) => {
+                        chunks.push(event.data);
+                    }
+
+                    $(document).on('click', '#stop-record-user', function () {
+                        initiateStopRecordUser.bind(stop, chunks, mediaRecord);
+                    });  
+                })
+                .catch((err) => {
+                    console.log('The following getUserMedia error occured: ' + err);
+                });
+        } else {
+            console.log('getUserMedia not supported on your browser!');
+        }
+    }
 
     return (
         <div>
@@ -76,7 +114,7 @@ const SearchPlayer = (props) => {
                         recordUser ?
                             <button className="btn btn-light col-4 col-md-7" id="stop-record-user" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: 'red' }}><FontAwesomeIcon style={{ color: 'red' }} icon={faPlus} /> Record</button>
                             :
-                            <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }}><FontAwesomeIcon style={{ color: '#17a2b8' }} icon={faPlus} /> Record</button>
+                            <button onClick={initiateRecordUser} className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }}><FontAwesomeIcon style={{ color: '#17a2b8' }} icon={faPlus} /> Record</button>
                     }
                     <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }} onClick={() => onPassToSideA(selectedResult)}><FontAwesomeIcon style={{ color: '#17a2b8' }} icon={faPlus} /> Side A</button>
                     <button className="btn btn-light col-4 col-md-7" style={{ margin: '0.4rem 0.2rem', fontSize: '0.8rem', color: '#17a2b8' }} onClick={() => onPassToSideB(selectedResult)}><FontAwesomeIcon style={{ color: '#17a2b8'}} icon={faPlus}/> Side B</button>
