@@ -333,4 +333,36 @@ footer {
   padding: 0rem !important;
   max-width: 740px !important;
 }
+
+.chat-container {
+  /*
+  font-family: 'Permanent Marker', sans-serif;
+  font-size: .7rem;
+  z-index: -1;
+  /* box-shadow: .2rem .2rem .2rem rgba(0, 0, 0, .3); */
+  /* display: flex; */
+  /* margin: 1rem auto; */
+  padding: 3rem 0 1rem !important;
+  display: flex;
+  width: 750px; 
+  margin: 0 auto;
+  overflow: hidden
+}
+
+.inner-container {
+  height: 100%;
+  font-size: 1rem;
+  width: 800px;
+  display: flex;
+  flex-direction: row;
+}
+
+.inner-chat-scroll {
+  width: 300px;
+  height: 500px;
+  border: 2px solid #0000;
+  padding: 20px;
+  overflow-y: scroll;
+}
+
 }
