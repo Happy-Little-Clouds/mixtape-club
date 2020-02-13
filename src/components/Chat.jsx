@@ -59,8 +59,9 @@ class Chat extends Component{
                             boxShadow: '.2rem .2rem .2rem rgba(0, 0, 0, .3)'}}>
                             {this.state.messages.map(message => {
                                 return (
-                                    <div style={{padding: '10px 0 10px 10px'}}>
-                                      {message.author}: {message.message}
+                                    <div style={{padding: '10px 0 5px 10px'}}>
+                                        <span style={{fontWeight: 'bold'}}>{message.author}</span>
+                                        <span>: {message.message}</span>
                                     </div>
                                 );
                             }).reverse()}
@@ -78,35 +79,6 @@ class Chat extends Component{
             </div>
         </div>
     </div>
-        //   <div className="chat-container" style={{margin: 200}}>
-        //       <div className="row login-card">
-        //           <div className="col-4 row col-9 col-md-6 d-flex align-items-center">
-        //               <div className="card">
-        //                   <div className="card-body">
-        //                       <div className="card-title">Global Chat</div>
-        //                       <hr/>
-        //                       <div className="messages inner-chat-scroll">
-        //                           {this.state.messages.map(message => {
-        //                               return (
-        //                                   <div>
-        //                                     {message.author}: {message.message}
-        //                                   </div>
-        //                               )
-        //                           })}
-        //                       </div>
-
-        //                   </div>
-        //                   <div className="card-footer">
-        //                       <input type="text" placeholder="Username" value={this.state.username} onChange={ev => this.setState({username: ev.target.value})} className="form-control"/>
-        //                       <br/>
-        //                       <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({message: ev.target.value})}/>
-        //                       <br/>
-        //                       <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
-        //                   </div>
-        //               </div>
-        //           </div>
-        //       </div>
-        //   </div>
       );
   }
 }
