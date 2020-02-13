@@ -37,6 +37,7 @@ class App extends React.Component {
                     albumReleaseDate: "1998-07-07",
                     albumHREF: "https://api.spotify.com/v1/albums/0DuFDnZcj7B4R0Jik1aDmY",
                     albumName: "Stunt (20th Anniversary Edition)",
+                    trackName: "One Week",
                     albumImages: [
                         {
                             height: 640,
@@ -201,7 +202,7 @@ class App extends React.Component {
         axios.post('/spotifyData', { query })
         .then(response => {
             spotifyResults = response.data
-            console.log(spotifyResults.albumImages, 'spotify response');
+            console.log(spotifyResults, 'spotify response');
             return axios.post('/search', { query });
         })
         .catch(err => {

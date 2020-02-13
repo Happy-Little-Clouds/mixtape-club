@@ -85,7 +85,7 @@ componentWillMount() {
         })
         .then((response) => {
             const {data} = response;
-            
+            debugger;
             let aVideoArray = [];
             let bVideoArray = [];
             let aTitleArray = [];

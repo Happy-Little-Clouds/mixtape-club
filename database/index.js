@@ -99,6 +99,7 @@ const findCreate = (googleInfo, callback) => {
 const storePlaylist = (plDetails, callback) => {
   // plDetails is an object with all of our columns needing to be saved
   // when sending in request, please be sure  to include all fields, all are stings.
+  debugger;
   const {
     userId, aSideLinks, bSideLinks, aTitles, bTitles, tapeDeck, tapeLabel,
   } = plDetails;

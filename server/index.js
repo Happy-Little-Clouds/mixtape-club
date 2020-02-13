@@ -367,6 +367,7 @@ app.post('/search', (req, res) => {
 app.post('/spotifyData',(req, res)=>{
   const query = req.body.query //take song query from this
   // debugger;
+  let spotifyData = {};
   axios({
     url: 'https://api.spotify.com/v1/search',
     headers: {
@@ -381,7 +382,7 @@ app.post('/spotifyData',(req, res)=>{
   })
     .then(({ data }) => {
       console.log(data);
-      const spotifyData = {
+      spotifyData = {
         artistName : data.tracks.items[0].artists[0].name,
         artistId : data.tracks.items[0].artists[0].id,
         artistUri : data.tracks.items[0].artists[0].uri,
@@ -391,13 +392,76 @@ app.post('/spotifyData',(req, res)=>{
         albumName : data.tracks.items[0].album.name,
         albumImages : data.tracks.items[0].album.images,
         trackExternalIds : data.tracks.items[0].external_ids,
+        trackName : data.tracks.items[0].name,
       }
+      // res.status(200);
+      // res.send(spotifyData);
+      return axios.get("https://api.genius.com/search", {
+        params: {
+          q: query,
+          access_token: process.env.GENIUS_CLIENT_TOKEN
+        }
+      })
+    })
+    .then((result)=>{
+      result;
+      let songId = result.data.response.hits[0].result.id
+
+      // return axios.get(`https://api.genius.com/referents?song_id=${songId}&text_format=plain`,
+      //   {
+      //     params: {
+      //       access_token: process.env.GENIUS_CLIENT_TOKEN
+      //     }
+      //   })
+
+      return axios.get(`https://api.genius.com/songs/${songId}?text_format=plain`,
+        {
+          params: {
+            access_token: process.env.GENIUS_CLIENT_TOKEN
+          }
+        })
+    })
+    .catch(x => console.log(x))
+    .then((response)=>{
+      descriptionUrl = response.data.response.song.description_annotation.api_path;
+
+      return axios.get(`https://api.genius.com${descriptionUrl}?text_format=plain`,{
+        params: {
+          access_token: process.env.GENIUS_CLIENT_TOKEN
+        }
+      })
+
+    })
+    .then((response)=>{
+      const descriptionBody=response.data.response.referent.annotations[0].body.plain;
+      spotifyData.trackDescription = descriptionBody;
       res.status(200);
       res.send(spotifyData);
     })
-    .catch(x => console.log(x));
 
+     // .then(result=>{
+    //   result;
+    //   //can work on how good the quality of the annotation and quotes are here
+    //   let lyricSnippet = result.data.response.referents[0].fragment;
+    //   let annotation = result.data.response.referents[0].annotations[0].body.plain;
+    //   let example = {classification: 'unreviewed', annotations:[{pinned:false}]};
+    //   let selectedAnnotation = result.data.response.referents.reduce((preR, elm, index)=>{
+    //     preR;
+    //     elm;
+    //     if (elm.classification !== 'unreviewed' && !preR.annotations[0].pinned){
+    //       preR = elm;
+    //     }
+    //     if(elm.annotations[0].pinned){
+    //       preR = elm;
+    //       debugger;
+    //     }
+    //     return preR;
+    //   },example)
+    //   debugger;
+    //   selectedAnnotation;
+    // })
 })
 const PORT = 3000;
 
 app.listen(PORT, () => console.log(`Your app is sparkling on port ${PORT}!`));
+
