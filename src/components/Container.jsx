@@ -35,7 +35,7 @@ function Container(props) {
                     render={(props) => <Login {...props} />} />
 
                     <Route path='/concerts'
-                    render={(props)=> <Concerts/>}/>
+                    render={(props)=> <Concerts {...props} updateLocation={props.updateLocation} city={props.city}/>}/>
 
 
                 </Switch>
