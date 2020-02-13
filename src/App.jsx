@@ -34,6 +34,7 @@ class App extends React.Component {
             builderImage: { image: BlueTape, name: 'blue' },
             tapeLabel: 'Untitled',
             playing: false,
+            recordUser: false,
             query: '',
             selectedResult: { snippet: { title: 'Search for a song' }, id: { videoId: '4D2qcbu26gs' } },
             sideA: [],
@@ -45,7 +46,9 @@ class App extends React.Component {
             googleId: 'FILL_ME_IN',
             tapeBackgroundColor: '#fff',
             queryParam: "",
-            city:'New Orleans'
+
+            userRecording: null,
+
         }
 
         this.onSearch = this.onSearch.bind(this);
@@ -53,6 +56,9 @@ class App extends React.Component {
         this.onPlayVideo = this.onPlayVideo.bind(this);
         this.onPauseVideo = this.onPauseVideo.bind(this);
         this.onReady = this.onReady.bind(this);
+        this.startRecordUser = this.startRecordUser.bind(this);
+        this.stopRecordUser = this.stopRecordUser.bind(this);
+        this.onUserRecordingEnded = this.onUserRecordingEnded.bind(this);
     
         this.onSelectTapeImage = this.onSelectTapeImage.bind(this);
         this.onTapeLabelChange = this.onTapeLabelChange.bind(this);
@@ -124,14 +130,24 @@ class App extends React.Component {
      * between rendering the play and pause button.
      */
     onPlayVideo() {
-        this.state.player.playVideo();
+        const { userRecording } = this.state;
+        if (userRecording) {
+            document.getElementById('user-recording').play();
+        } else {
+            this.state.player.playVideo();
+        }
         this.setState({
             playing: true,
         })
     }
 
     onPauseVideo() {
-        this.state.player.pauseVideo();
+        const { userRecording } = this.state;
+        if (userRecording) {
+            document.getElementById('user-recording').pause();
+        } else {
+            this.state.player.pauseVideo();
+        }
         this.setState({
             playing: false,
         })
@@ -173,6 +189,7 @@ class App extends React.Component {
         axios.post('/search', {query})
         .then((response)=>{
             this.setState({
+                userRecording: null,
                 searchResults : response.data.items,
                 selectedResult : response.data.items[0],
             })
@@ -340,17 +357,68 @@ class App extends React.Component {
 
     }
 
-    updateLocation(event){
-        this.setState({city: event.target.value})
+    startRecordUser() {
+        console.log('recordUser made true');
+        this.setState({
+            recordUser: true,
+        }, () => {
+            this.state.recordUser;
+        });
     }
+
+    stopRecordUser(blob) {
+        console.log('stopping');
+        this.setState({
+            recordUser: false,
+        });
+        const formData = new FormData();
+        formData.append('name', 'recording');
+        formData.append('recording', blob);
+        axios.post('/upload', formData, {
+            'Content-Type': 'multipart/form-data',
+        })
+            .then(({ data }) => {
+                debugger;
+                this.setState({
+                    userRecording: data,
+                    selectedResult: {
+                        snippet: {
+                            title: 'my recording',
+                        },
+                        id: {
+                            videoId: data,
+                        },
+                    },
+                    opts: {
+                        userRecording: true,
+                    },
+                });
+                this.state.userRecording;
+                debugger;
+            })
+            .catch(err => console.log(err));
+    };
+
+    onUserRecordingEnded() {
+        console.log('user recording end');
+    }
+
+
     render() {
-        const { isAuthenticated,city, searchResults, playing, selectedResult, tapeImages, builderImage, tapeLabel, sideA, sideB, displayImageSelector, onDeckSideA, onDeckSideB, tapeBackgroundColor, queryParam, googleId, userName } = this.state;
+        const { isAuthenticated, searchResults, playing, selectedResult, tapeImages, builderImage, tapeLabel, sideA, sideB, displayImageSelector, onDeckSideA, onDeckSideB, tapeBackgroundColor, queryParam, googleId, userName, recordUser } = this.state;
+
         return (
             <Router>
                 <div className="App">
                     <Navigation logout={this.logout} isAuthenticated={isAuthenticated} userName={userName} />
+
                     <Container authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onChange={this.onChange} onSearch={this.onSearch} onResultClick={this.onResultClick} playing={playing} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} queryParam={queryParam} googleId={googleId} city={city} updateLocation={this.updateLocation}/>
-                   </div>
+                  
+
+                    <Container onUserRecordingEnded={this.onUserRecordingEnded} recordUser={recordUser} userRecordEnd={this.userRecordEnd} startRecordUser={this.startRecordUser} stopRecordUser={this.stopRecordUser} authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onChange={this.onChange} onSearch={this.onSearch} onResultClick={this.onResultClick} playing={playing} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} queryParam={queryParam} googleId={googleId}/>
+
+                </div>
+
             </Router>
         );
     }
