@@ -14,6 +14,7 @@ import SearchList from './components/SearchList.jsx';
 import PlaylistBuilderList from './components/PlaylistBuilderList.jsx';
 import PlaylistImageSelector from './components/PlaylistImageSelector.jsx';
 import { cpus } from "os";
+import Concerts from "./components/Concerts.jsx"
 
 import LisaFrankenstein from './assets/img/tapes/lisa-frankenstein-tape.gif';
 import GreenTape from './assets/img/tapes/green-tape.gif';
@@ -45,7 +46,9 @@ class App extends React.Component {
             googleId: 'FILL_ME_IN',
             tapeBackgroundColor: '#fff',
             queryParam: "",
+
             userRecording: null,
+
         }
 
         this.onSearch = this.onSearch.bind(this);
@@ -67,6 +70,7 @@ class App extends React.Component {
         this.onDeleteSong = this.onDeleteSong.bind(this);
         this.authenticateUser = this.authenticateUser.bind(this);
         this.logout = this.logout.bind(this);
+        this.updateLocation = this.updateLocation.bind(this);
     }
 
     /**
@@ -402,13 +406,19 @@ class App extends React.Component {
 
     render() {
         const { isAuthenticated, searchResults, playing, selectedResult, tapeImages, builderImage, tapeLabel, sideA, sideB, displayImageSelector, onDeckSideA, onDeckSideB, tapeBackgroundColor, queryParam, googleId, userName, recordUser } = this.state;
+
         return (
             <Router>
                 <div className="App">
                     <Navigation logout={this.logout} isAuthenticated={isAuthenticated} userName={userName} />
+
+                    <Container authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onChange={this.onChange} onSearch={this.onSearch} onResultClick={this.onResultClick} playing={playing} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} queryParam={queryParam} googleId={googleId} city={city} updateLocation={this.updateLocation}/>
+                  
+
                     <Container onUserRecordingEnded={this.onUserRecordingEnded} recordUser={recordUser} userRecordEnd={this.userRecordEnd} startRecordUser={this.startRecordUser} stopRecordUser={this.stopRecordUser} authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onChange={this.onChange} onSearch={this.onSearch} onResultClick={this.onResultClick} playing={playing} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} queryParam={queryParam} googleId={googleId}/>
 
                 </div>
+
             </Router>
         );
     }
