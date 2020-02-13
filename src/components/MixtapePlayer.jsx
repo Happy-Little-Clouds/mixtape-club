@@ -7,10 +7,10 @@ import UserMixtapesList from './UserMixtapes.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faForward, faBackward } from '@fortawesome/free-solid-svg-icons';
 import { library, config } from '@fortawesome/fontawesome-svg-core'
-
+import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { basename } from 'path';
-
+import Concerts from '../components/Concerts.jsx'
 import LisaFrankenstein from '../assets/img/tapes/lisa-frankenstein-tape.gif';
 
 /** MixtapePlayer component is stateful and renders the entire mixtape-player route with it's child
@@ -40,6 +40,7 @@ constructor(props){
         userName: '',
         currentPlaylistId: '',
         toggleLink: false,
+        location: 'New Orleans'
     }
     
     this.getUserPlaylists()
@@ -54,7 +55,7 @@ constructor(props){
     this.checkVid = this.checkVid.bind(this);
     this.tapeRefresh = this.tapeRefresh.bind(this);
     this.onToggleShareLink = this.onToggleShareLink.bind(this);
-    
+    // this.updateLocation = this.updateLocation.bind(this)
     this.divStyle = {
         borderRadius: '5px',
         marginTop: '-360px'
@@ -65,6 +66,12 @@ constructor(props){
 }
 
 componentWillMount() {
+    const script = document.createElement("script");
+                    
+    const scriptText = document.createTextNode("complex script with functions i.e. everything that would go inside the script tags");
+    script.src = "https://ticketmaster-api-staging.github.io/products-and-docs/widgets/event-discovery/1.0.0/lib/main-widget.js"
+    script.appendChild(scriptText);
+    document.body.appendChild(script);
     this.loadShared()
     if(this.state.googleId !== null){
         this.getUserPlaylists();
@@ -350,19 +357,22 @@ componentWillMount() {
             toggleLink: true,
         })
     }
+   
 
     render (){
 
         const { aSideLinks, bSideLinks, aSideTitles, bSideTitles, tapeCover, userPlaylists, tapeTitle, currentSong, userName, currentPlaylistId, toggleLink} = this.state;
 
         return(
-        <div>
+            <div class='row'>
+
+        <div class='col-lg-9'>
         <h4 className="player-tape-label">{tapeTitle}</h4>
         <TapeCoverImage tapeCover={tapeCover} />
 
             <YouTube className="YouTube-vid" onReady={this.onReady} onStateChange={this.checkVid}/>
                 <div className="row col-9 col-md-6 d-flex align-items-center player-ui mx-auto" style={this.divStyle}>
-                    <div className="row col-12 col-md-12" >
+                    <div className="row col-11 col-md-11" >
                         <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faBackward} onMouseDown={this.onBackward} onMouseUp={this.onStopBackward} />
                         <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPause} onClick={this.onPauseVideo} />
                         <FontAwesomeIcon className="col-3 ui-button" style={this.iconStyle} icon={faPlay} onClick={this.onPlayVideo} />
@@ -373,6 +383,13 @@ componentWillMount() {
                 <PlayerSongList onFlip={this.onFlip} currentSong={currentSong} aSideLinks={aSideLinks} bSideLinks={bSideLinks} aSideTitles={aSideTitles} bSideTitles={bSideTitles} currentPlaylistId={currentPlaylistId} toggleLink={toggleLink} onToggleLink={this.onToggleShareLink} />
                 <UserMixtapesList userPlaylists={userPlaylists} userName={userName} tapeRefresh={this.tapeRefresh} />
         </div>
+        
+        <div class="col-md-1 mt-md-4"  >
+        <Concerts location={this.state.location}/>
+        {/* <div   class="mt-md-4" w-type="event-discovery" w-tmapikey="CR5DEqMYxzHOl6PosvPtI52lZfwVNGHB" w-googleapikey="YOUR_GOOGLE_API_KEY" w-keyword="music" w-theme="oldschool" w-colorscheme="custom" w-width="350" w-height="600" w-size="25" w-border="5" w-borderradius="6" w-postalcode="" w-radius="25" w-city={this.state.location} w-period="month" w-layout="vertical" w-attractionid="" w-promoterid="" w-venueid="" w-affiliateid="" w-segmentid="" w-proportion="xxl" w-titlelink="off" w-sorting="groupByName" w-id="id_xxdcq" w-countrycode="US" w-source="" w-branding="Ticketmaster" w-titlecolor="#171a1a" w-titlehovercolor="#ee7a36" w-buybuttonbackgroundhovercolor="#ee7a36" w-buybuttonbackgroundcolor="#17a2b8" w-descriptioncolor="#141414" w-bordercolor="#17a2b8" w-datecolor="#292727" w-latlong=""></div> */}
+     
+        </div>
+            </div>
         )
     };
 }
