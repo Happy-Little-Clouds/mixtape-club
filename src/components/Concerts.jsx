@@ -28,9 +28,9 @@ class Concerts extends Component{
                         console.log('Latitude:' + position.coords.latitude);
                         console.log('Longitude:' + position.coords.longitude);
                         console.log('spot', position.coords.latitude.toString() + ',' + position.coords.longitude.toString())
-                        this.setState({spot: loci},
-                        setTimeout(()=> console.log('hi'), 2000)
-                        )
+                        // this.setState({spot: loci},
+                        // setTimeout(()=> console.log('hi'), 2000)
+                        // )
                         const script = document.createElement("script");
                     
                         const scriptText = document.createTextNode("complex script with functions i.e. everything that would go inside the script tags");

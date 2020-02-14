@@ -64,7 +64,7 @@ class PlaylistBuilderList extends Component {
                         Dismiss
                         <span style={{ "paddingLeft": "10px",}}>
                             <i style={{
-                                "border": "solid black",
+                                "border": "solid white",
                                 "border-width": "0 3px 3px 0",
                                 "display": "inline-block",
                                 "padding": "3px",
@@ -113,7 +113,7 @@ class PlaylistBuilderList extends Component {
                                                 className="btn btn-info col-2 col-md-2 mx-auto" 
                                                 style={{maxHeight: "50%", float:"left"}}
                                                 type="submit">
-                                                <i style={{"border": "solid black", 
+                                                <i style={{"border": "solid white", 
                                                         "border-width": "0 3px 3px 0", 
                                                         "display": "inline-block",
                                                         "padding": "3px",
