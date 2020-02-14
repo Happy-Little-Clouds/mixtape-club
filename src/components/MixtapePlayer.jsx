@@ -40,6 +40,7 @@ constructor(props){
         userName: '',
         currentPlaylistId: '',
         toggleLink: false,
+        queryResultsOfCurrentSong: {}
     }
     
     this.getUserPlaylists()
@@ -85,7 +86,6 @@ componentWillMount() {
         })
         .then((response) => {
             const {data} = response;
-            debugger;
             let aVideoArray = [];
             let bVideoArray = [];
             let aTitleArray = [];
@@ -206,6 +206,8 @@ componentWillMount() {
         this.setState({
             playing: true,
         })
+        // axios.get("/search",{this.state.})
+        debugger;
     }
 
     /**

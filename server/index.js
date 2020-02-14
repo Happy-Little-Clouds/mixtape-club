@@ -20,6 +20,8 @@ const db = require('../database/index.js');
 
 require('dotenv').config();
 
+
+
 /**
  * app rename to aid in functioncalls
  */
@@ -59,40 +61,79 @@ request.post(authOptions, function (error, response, body) {
     // });
   }
 });
-//delete when done
-// setTimeout(() => {
-//   const query = "one week"
-//   axios({
-//     url: 'https://api.spotify.com/v1/search',
-//     headers: {
-//       'Authorization': 'Bearer ' + token
-//     },
-//     params:{
-//       "q": query,
-//       "type" : "track",
-//       "limit" : "1"
-//     }
+spotifyFunction = (query) => {
+  // debugger;
+  let spotifyData = {};
+  return axios({
+    url: 'https://api.spotify.com/v1/search',
+    headers: {
+      'Authorization': 'Bearer ' + token
+    },
+    params: {
+      "q": query,
+      "type": "track",
+      "limit": "1"
+    }
 
-//   })
-//     .then(({data}) => {
-//       console.log(data);
-//       const artistName = data.tracks.items[0].artists[0].name
-//       const artistId = data.tracks.items[0].artists[0].id
-//       const artistUri = data.tracks.items[0].artists[0].uri
-//       const albumId = data.tracks.items[0].album.id
-//       const albumReleaseDate = data.tracks.items[0].album.release_date
-//       const albumHREF = data.tracks.items[0].album.href
-//       const albumName = data.tracks.items[0].album.name
-//       const albumImages = data.tracks.items[0].album.images
-//       const trackExternalIds = data.tracks.items[0].external_ids
+  })
+    .then(({ data }) => {
+      console.log(data);
+      spotifyData = {
+        artistName: data.tracks.items[0].artists[0].name,
+        artistId: data.tracks.items[0].artists[0].id,
+        artistUri: data.tracks.items[0].artists[0].uri,
+        albumId: data.tracks.items[0].album.id,
+        albumReleaseDate: data.tracks.items[0].album.release_date,
+        albumHREF: data.tracks.items[0].album.href,
+        albumName: data.tracks.items[0].album.name,
+        albumImages: data.tracks.items[0].album.images,
+        trackExternalIds: data.tracks.items[0].external_ids,
+        trackName: data.tracks.items[0].name,
+      }
+      // res.status(200);
+      // res.send(spotifyData);
+      return axios.get("https://api.genius.com/search", {
+        params: {
+          q: query,
+          access_token: process.env.GENIUS_CLIENT_TOKEN
+        }
+      })
+    })
+    .then((result) => {
+      result;
+      let songId = result.data.response.hits[0].result.id
 
-//       debugger;
-//     })
-//     .catch(x => console.log(x));
+      // return axios.get(`https://api.genius.com/referents?song_id=${songId}&text_format=plain`,
+      //   {
+      //     params: {
+      //       access_token: process.env.GENIUS_CLIENT_TOKEN
+      //     }
+      //   })
 
-// }, 6000)
-//end of dumb spotify shit
+      return axios.get(`https://api.genius.com/songs/${songId}?text_format=plain`,
+        {
+          params: {
+            access_token: process.env.GENIUS_CLIENT_TOKEN
+          }
+        })
+    })
+    .catch(x => console.log(x))
+    .then((response) => {
+      descriptionUrl = response.data.response.song.description_annotation.api_path;
 
+      return axios.get(`https://api.genius.com${descriptionUrl}?text_format=plain`, {
+        params: {
+          access_token: process.env.GENIUS_CLIENT_TOKEN
+        }
+      })
+
+    })
+    .then((response) => {
+      const descriptionBody = response.data.response.referent.annotations[0].body.plain;
+      spotifyData.trackDescription = descriptionBody;
+      return spotifyData
+    })
+}
 
 
 
@@ -200,6 +241,7 @@ app.get('/userPlaylists', (req, res) => {
     console.log(displayName);
     db.getAllPlaylists({ userId: id }, (info, response) => {
       console.log(response);
+      response.map(()=>{})
       const data = { response, displayName };
       res.send(data);
     });
@@ -304,7 +346,6 @@ app.post('/mixtape-player/', (req, res) => {
   // need to do this dynamically
   const { id } = req.body;
   const filter = { _id: id };
-
   db.retrievePlaylist(filter, (response) => {
     if (response === null) {
       res.end('No Results Found');
@@ -323,6 +364,8 @@ app.post('/mixtape-player/', (req, res) => {
           tapeLabel,
           userId,
         };
+        
+
         res.send(data);
       } else {
         const data = {

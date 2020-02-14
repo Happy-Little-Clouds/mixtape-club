@@ -7,8 +7,8 @@ import React from 'react';
 const SearchListItem = (props) => {
     const { searchResult, onResultClick } = props;
     let title = ""
-    if(searchResult.spotify.youtubeSnippet){ 
-        title = searchResult.spotify.youtubeSnippet.replace(/&amp;/g, '&');
+    if (searchResult.extraSnippet){ 
+        title = searchResult.extraSnippet.replace(/&amp;/g, '&');
     }
     title = title.replace(/&#39;/g,'\'');
     title = title.replace(/&quot;/g, '\"');

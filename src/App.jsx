@@ -211,6 +211,8 @@ class App extends React.Component {
         .then((response)=>{
             response.data.items.map(song=>{
                 song.spotify = spotifyResults;
+                song.extraSnippet = song.snippet.title
+                song.snippet.title = spotifyResults.trackName
             })
             this.setState({
                 searchResults : response.data.items,

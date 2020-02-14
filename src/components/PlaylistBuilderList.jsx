@@ -41,7 +41,7 @@ class PlaylistBuilderList extends Component {
         };
     }
     handleShowLyrics(key){
-        this.state.showLyrics[key] && this.setState({showLyrics:key})
+        this.setState({showLyrics:key})
     }
     
     render () {
