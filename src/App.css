@@ -333,4 +333,22 @@ footer {
   padding: 0rem !important;
   max-width: 740px !important;
 }
+
+.chat-container {
+  padding: 3rem 0 1rem !important;
+  display: flex;
+  width: auto; 
+  margin: 0 auto;
+  overflow: hidden;
+  justify-content: center;
+}
+
+.inner-container {
+  height: 100%;
+  font-size: 1rem;
+  width: 800px;
+  display: flex;
+  flex-direction: row;
+}
+
 }

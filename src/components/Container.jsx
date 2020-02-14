@@ -6,6 +6,11 @@ import Login from "./Login.jsx";
 import CreateMixtapes from "./CreateMixtapes.jsx";
 import MixtapePlayer from "./MixtapePlayer.jsx";
 
+import Concerts from "../components/Concerts.jsx"
+
+import Chat from "./Chat.jsx"
+
+
 /** Container component handles the front-end routing/rendering of the app and renders the Login,
  * CreateMixtapes, and MixtapePlayer components at their respective routes. Container is a child 
  * component of App.
@@ -13,16 +18,15 @@ import MixtapePlayer from "./MixtapePlayer.jsx";
 
 function Container(props) {
 
-    const { isAuthenticated, authenticateUser, location, searchResults, onChange, onSearch, onPlayVideo, onReady, onPauseVideo, onResultClick, playing, selectedResult, tapeImages, builderImage, selectImage, tapeLabel, onLabelChange, onPassToSideA, sideA, onPassToSideB, sideB, displayImageSelector, onSaveImage, onDeckSideA, onDeckSideB, onSavePlaylist, tapeBackgroundColor, onDelete, queryParam, googleId } = props;
+    const { onUserRecordingEnded, recordUser, userRecordEnd, startRecordUser, stopRecordUser, isAuthenticated, authenticateUser, location, searchResults, onChange, onSearch, onPlayVideo, onReady, onPauseVideo, onResultClick, playing, selectedResult, tapeImages, builderImage, selectImage, tapeLabel, onLabelChange, onPassToSideA, sideA, onPassToSideB, sideB, displayImageSelector, onSaveImage, onDeckSideA, onDeckSideB, onSavePlaylist, tapeBackgroundColor, onDelete, queryParam, googleId } = props;
    
     return (
             <section className="route-section">
                 <Switch location={location}>
-                console.log(location);
                     <Route exact path="/" component={Login} />
                     
                     <Route path='/create-mixtapes'
-                    render={(props) => isAuthenticated ? (<CreateMixtapes {...props} searchResults={searchResults} authenticateUser={authenticateUser} onReady={onReady} onSearch={onSearch} onChange={onChange} onPauseVideo={onPauseVideo} onPlayVideo={onPlayVideo} onResultClick={onResultClick} playing={playing} selectedResult={selectedResult} tapeImages={tapeImages} builderImage={builderImage} selectImage={selectImage} tapeLabel={tapeLabel} onLabelChange={onLabelChange} onPassToSideA={onPassToSideA} sideA={sideA} onPassToSideB={onPassToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={onSaveImage} onSavePlaylist={onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={onDelete} />) : (<Login {...props} />) } />
+                    render={(props) => isAuthenticated ? (<CreateMixtapes {...props} onUserRecordingEnded={onUserRecordingEnded} recordUser={recordUser}userRecordEnd={userRecordEnd} startRecordUser={startRecordUser} stopRecordUser={stopRecordUser} searchResults={searchResults} authenticateUser={authenticateUser} onReady={onReady} onSearch={onSearch} onChange={onChange} onPauseVideo={onPauseVideo} onPlayVideo={onPlayVideo} onResultClick={onResultClick} playing={playing} selectedResult={selectedResult} tapeImages={tapeImages} builderImage={builderImage} selectImage={selectImage} tapeLabel={tapeLabel} onLabelChange={onLabelChange} onPassToSideA={onPassToSideA} sideA={sideA} onPassToSideB={onPassToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={onSaveImage} onSavePlaylist={onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={onDelete} />) : (<Login {...props} />) } />
 
                     <Route path='/mixtape-player'
                     render={(props) => <MixtapePlayer {...props} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} queryParam={queryParam} googleId={googleId}/>} />
@@ -30,8 +34,15 @@ function Container(props) {
                     <Route path='/mixtape-player/:id' component={MixtapePlayer}
                     render={(props) => <MixtapePlayer {...props} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} queryParam={queryParam}/>} />
 
+                    <Route path='/chatroom'
+                    render={(props) => <Chat />} />
+
                     <Route path='/login'
                     render={(props) => <Login {...props} />} />
+
+                    <Route path='/concerts'
+                    render={(props)=> <Concerts {...props} updateLocation={props.updateLocation} city={props.city}/>}/>
+
 
                 </Switch>
             </section>

@@ -1,4 +1,6 @@
+const fs = require('fs');
 const express = require('express');
+const multer = require('multer');
 const session = require('express-session');
 const path = require('path');
 const axios = require('axios');
@@ -138,6 +140,7 @@ spotifyFunction = (query) => {
 
 
 const app = express();
+const upload = multer();
 
 /**
  * middleware assigned to app to aid in any incoming requests
@@ -315,6 +318,41 @@ app.post('/store', (req, res) => {
     console.log(response);
     res.end('Playlist Stored');
   });
+});
+
+app.post('/upload', upload.single('recording'), async (req, res) => {
+  try {
+    const { buffer: recording } = req.file;
+    const { id } = req.user;
+    const fileName = `${id}-${new Date().toISOString()}`;
+    fs.open(`server/audio/${fileName}.ogg`, 'w+', (err, fd) => {
+      if (err) {
+        res.status(500).send('Could not save recording');
+      } else {
+        fs.writeFile(fd, recording, (err) => {
+          if (err) {
+            res.status(500).send('Could not save recording');
+          } else {
+            fs.readFile(fd, (err, result) => {
+              if (err) {
+                res.status(500).send('Could not save recording');
+              }
+              fs.close(fd, (err) => {
+                if (err) {
+                  res.status(500).send('Could not save recording');
+                }
+                res.status(201).send(fileName);
+              });
+            });
+          }
+        });
+      }
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err);
+    res.status(500).send('Failed to upload track');
+  }
 });
 
 /**
