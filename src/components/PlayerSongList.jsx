@@ -8,7 +8,7 @@ import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 
 const PlayerSongList = (props) => {
     const { aSideTitles, bSideTitles, currentSong, aSideLinks, bSideLinks, onFlip, currentPlaylistId, toggleLink, onToggleLink } = props;
-    
+    console.log(props);
     return (
 
         <div className="border border-info playlist-builder-player mx-auto shadow-sm p-3 mb-5 bg-white rounded">

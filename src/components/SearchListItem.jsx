@@ -6,8 +6,10 @@ import React from 'react';
 
 const SearchListItem = (props) => {
     const { searchResult, onResultClick } = props;
-   
-    let title = searchResult.snippet.title.replace(/&amp;/g, '&');
+    let title = ""
+    if (searchResult.extraSnippet){ 
+        title = searchResult.extraSnippet.replace(/&amp;/g, '&');
+    }
     title = title.replace(/&#39;/g,'\'');
     title = title.replace(/&quot;/g, '\"');
     return (

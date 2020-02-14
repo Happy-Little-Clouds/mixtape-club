@@ -22,9 +22,122 @@ const db = require('../database/index.js');
 
 require('dotenv').config();
 
+
+
 /**
  * app rename to aid in functioncalls
  */
+
+//some dumb shit i need for spotify
+let token = '';
+const client_id = '2d6b8ee81c784fa58be76068c3a0fad8'; // Your client id
+const client_secret = '954a2450ce4f4c82a4966d3828c87f90'; // Your secret
+var request = require('request'); // "Request" library
+// your application requests authorization
+var authOptions = {
+  url: 'https://accounts.spotify.com/api/token',
+  headers: {
+    'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+  },
+  form: {
+    grant_type: 'client_credentials'
+  },
+  json: true
+};
+//this updates our token for spotify requests. idk if it ever timesout after
+request.post(authOptions, function (error, response, body) {
+  if (!error && response.statusCode === 200) {
+    console.log('spotify code ran and token grabbed appropriately')
+
+    // use the access token to access the Spotify Web API
+    token = body.access_token;
+    // var options = {
+    //   url: 'https://api.spotify.com/v1/users/jmperezperez',
+    //   headers: {
+    //     'Authorization': 'Bearer ' + token
+    //   },
+    //   json: true
+    // };
+    // request.get(options, function (error, response, body) {
+    //   console.log(body);
+    // });
+  }
+});
+spotifyFunction = (query) => {
+  // debugger;
+  let spotifyData = {};
+  return axios({
+    url: 'https://api.spotify.com/v1/search',
+    headers: {
+      'Authorization': 'Bearer ' + token
+    },
+    params: {
+      "q": query,
+      "type": "track",
+      "limit": "1"
+    }
+
+  })
+    .then(({ data }) => {
+      console.log(data);
+      spotifyData = {
+        artistName: data.tracks.items[0].artists[0].name,
+        artistId: data.tracks.items[0].artists[0].id,
+        artistUri: data.tracks.items[0].artists[0].uri,
+        albumId: data.tracks.items[0].album.id,
+        albumReleaseDate: data.tracks.items[0].album.release_date,
+        albumHREF: data.tracks.items[0].album.href,
+        albumName: data.tracks.items[0].album.name,
+        albumImages: data.tracks.items[0].album.images,
+        trackExternalIds: data.tracks.items[0].external_ids,
+        trackName: data.tracks.items[0].name,
+      }
+      // res.status(200);
+      // res.send(spotifyData);
+      return axios.get("https://api.genius.com/search", {
+        params: {
+          q: query,
+          access_token: process.env.GENIUS_CLIENT_TOKEN
+        }
+      })
+    })
+    .then((result) => {
+      result;
+      let songId = result.data.response.hits[0].result.id
+
+      // return axios.get(`https://api.genius.com/referents?song_id=${songId}&text_format=plain`,
+      //   {
+      //     params: {
+      //       access_token: process.env.GENIUS_CLIENT_TOKEN
+      //     }
+      //   })
+
+      return axios.get(`https://api.genius.com/songs/${songId}?text_format=plain`,
+        {
+          params: {
+            access_token: process.env.GENIUS_CLIENT_TOKEN
+          }
+        })
+    })
+    .catch(x => console.log(x))
+    .then((response) => {
+      descriptionUrl = response.data.response.song.description_annotation.api_path;
+
+      return axios.get(`https://api.genius.com${descriptionUrl}?text_format=plain`, {
+        params: {
+          access_token: process.env.GENIUS_CLIENT_TOKEN
+        }
+      })
+
+    })
+    .then((response) => {
+      const descriptionBody = response.data.response.referent.annotations[0].body.plain;
+      spotifyData.trackDescription = descriptionBody;
+      return spotifyData
+    })
+}
+
+
 
 const app = express();
 const upload = multer();
@@ -131,6 +244,7 @@ app.get('/userPlaylists', (req, res) => {
     console.log(displayName);
     db.getAllPlaylists({ userId: id }, (info, response) => {
       console.log(response);
+      response.map(()=>{})
       const data = { response, displayName };
       res.send(data);
     });
@@ -270,7 +384,6 @@ app.post('/mixtape-player/', (req, res) => {
   // need to do this dynamically
   const { id } = req.body;
   const filter = { _id: id };
-
   db.retrievePlaylist(filter, (response) => {
     if (response === null) {
       res.end('No Results Found');
@@ -289,6 +402,8 @@ app.post('/mixtape-player/', (req, res) => {
           tapeLabel,
           userId,
         };
+        
+
         res.send(data);
       } else {
         const data = {
@@ -330,6 +445,104 @@ app.post('/search', (req, res) => {
     });
 });
 
+app.post('/spotifyData',(req, res)=>{
+  const query = req.body.query //take song query from this
+  // debugger;
+  let spotifyData = {};
+  axios({
+    url: 'https://api.spotify.com/v1/search',
+    headers: {
+      'Authorization': 'Bearer ' + token
+    },
+    params: {
+      "q": query,
+      "type": "track",
+      "limit": "1"
+    }
+
+  })
+    .then(({ data }) => {
+      console.log(data);
+      spotifyData = {
+        artistName : data.tracks.items[0].artists[0].name,
+        artistId : data.tracks.items[0].artists[0].id,
+        artistUri : data.tracks.items[0].artists[0].uri,
+        albumId : data.tracks.items[0].album.id,
+        albumReleaseDate : data.tracks.items[0].album.release_date,
+        albumHREF : data.tracks.items[0].album.href,
+        albumName : data.tracks.items[0].album.name,
+        albumImages : data.tracks.items[0].album.images,
+        trackExternalIds : data.tracks.items[0].external_ids,
+        trackName : data.tracks.items[0].name,
+      }
+      // res.status(200);
+      // res.send(spotifyData);
+      return axios.get("https://api.genius.com/search", {
+        params: {
+          q: query,
+          access_token: process.env.GENIUS_CLIENT_TOKEN
+        }
+      })
+    })
+    .then((result)=>{
+      result;
+      let songId = result.data.response.hits[0].result.id
+
+      // return axios.get(`https://api.genius.com/referents?song_id=${songId}&text_format=plain`,
+      //   {
+      //     params: {
+      //       access_token: process.env.GENIUS_CLIENT_TOKEN
+      //     }
+      //   })
+
+      return axios.get(`https://api.genius.com/songs/${songId}?text_format=plain`,
+        {
+          params: {
+            access_token: process.env.GENIUS_CLIENT_TOKEN
+          }
+        })
+    })
+    .catch(x => console.log(x))
+    .then((response)=>{
+      descriptionUrl = response.data.response.song.description_annotation.api_path;
+
+      return axios.get(`https://api.genius.com${descriptionUrl}?text_format=plain`,{
+        params: {
+          access_token: process.env.GENIUS_CLIENT_TOKEN
+        }
+      })
+
+    })
+    .then((response)=>{
+      const descriptionBody=response.data.response.referent.annotations[0].body.plain;
+      spotifyData.trackDescription = descriptionBody;
+      res.status(200);
+      res.send(spotifyData);
+    })
+
+     // .then(result=>{
+    //   result;
+    //   //can work on how good the quality of the annotation and quotes are here
+    //   let lyricSnippet = result.data.response.referents[0].fragment;
+    //   let annotation = result.data.response.referents[0].annotations[0].body.plain;
+    //   let example = {classification: 'unreviewed', annotations:[{pinned:false}]};
+    //   let selectedAnnotation = result.data.response.referents.reduce((preR, elm, index)=>{
+    //     preR;
+    //     elm;
+    //     if (elm.classification !== 'unreviewed' && !preR.annotations[0].pinned){
+    //       preR = elm;
+    //     }
+    //     if(elm.annotations[0].pinned){
+    //       preR = elm;
+    //       debugger;
+    //     }
+    //     return preR;
+    //   },example)
+    //   debugger;
+    //   selectedAnnotation;
+    // })
+})
 const PORT = 3000;
 
 app.listen(PORT, () => console.log(`Your app is sparkling on port ${PORT}!`));
+

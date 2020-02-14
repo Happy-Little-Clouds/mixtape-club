@@ -28,7 +28,38 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            searchResults: [{ snippet: { title: '' }, id: { videoId: '4D2qcbu26gs' }}],
+            searchResults: 
+            [{ snippet: { title: '' }, id: { videoId: '4D2qcbu26gs' },
+                spotify: {
+                    artistName: "Barenaked Ladies",
+                    artistId: "0dEvJpkqhrcn64d3oI8v79",
+                    artistUri: "spotify:artist:0dEvJpkqhrcn64d3oI8v79",
+                    albumId: "0DuFDnZcj7B4R0Jik1aDmY",
+                    albumReleaseDate: "1998-07-07",
+                    albumHREF: "https://api.spotify.com/v1/albums/0DuFDnZcj7B4R0Jik1aDmY",
+                    albumName: "Stunt (20th Anniversary Edition)",
+                    trackName: "One Week",
+                    albumImages: [
+                        {
+                            height: 640,
+                            url: "https://i.scdn.co/image/ab67616d0000b2737d2055190ae60ffa4c74d13c",
+                            width: 640,
+                        },
+                        {
+                            height: 300,
+                            url: "https://i.scdn.co/image/ab67616d00001e027d2055190ae60ffa4c74d13c",
+                            width: 300
+                        },
+                        {
+                            height: 64,
+                            url: "https://i.scdn.co/image/ab67616d000048517d2055190ae60ffa4c74d13c",
+                            width: 64
+                        }
+
+                    ],
+                    trackExternalIds: { isrc: "USRE19800261" }
+                }
+        }],
             player: null,
             tapeImages: [{ image: LisaFrankenstein, name: 'Lisa Frankenstein' }, { image: GreenTape, name: 'green' }, { image: OrangeTape, name: 'orange' }, { image: BlueTape, name: 'blue' }, { image: RedTape, name: 'red' }, { image: PinkTape, name: 'pink' }],
             builderImage: { image: BlueTape, name: 'blue' },
@@ -70,7 +101,6 @@ class App extends React.Component {
         this.onDeleteSong = this.onDeleteSong.bind(this);
         this.authenticateUser = this.authenticateUser.bind(this);
         this.logout = this.logout.bind(this);
-        this.updateLocation = this.updateLocation.bind(this);
     }
 
     /**
@@ -186,8 +216,22 @@ class App extends React.Component {
     
     onSearch(){
         let query = this.state.query;
-        axios.post('/search', {query})
+        let spotifyResults = {};
+        axios.post('/spotifyData', { query })
+        .then(response => {
+            spotifyResults = response.data
+            console.log(spotifyResults, 'spotify response');
+            return axios.post('/search', { query });
+        })
+        .catch(err => {
+            console.log(err, 'err from spotify')
+        })      
         .then((response)=>{
+            response.data.items.map(song=>{
+                song.spotify = spotifyResults;
+                song.extraSnippet = song.snippet.title
+                song.snippet.title = spotifyResults.trackName
+            })
             this.setState({
                 userRecording: null,
                 searchResults : response.data.items,
@@ -197,6 +241,7 @@ class App extends React.Component {
         .catch((err)=> {
             console.error('Error searching:', err)
         })
+        
     }
 
     /**
@@ -388,6 +433,36 @@ class App extends React.Component {
                         id: {
                             videoId: data,
                         },
+                        spotify: {
+                            artistName: "Me",
+                            artistId: "0dEvJpkqhrcn64d3oI8v79",
+                            artistUri: "spotify:artist:0dEvJpkqhrcn64d3oI8v79",
+                            albumId: "0DuFDnZcj7B4R0Jik1aDmY",
+                            albumReleaseDate: "1998-07-07",
+                            albumHREF: "https://api.spotify.com/v1/albums/0DuFDnZcj7B4R0Jik1aDmY",
+                            albumName: "",
+                            trackName: "User Recording",
+                            description: "User Recording",
+                            albumImages: [
+                                {
+                                    height: 640,
+                                    url: "https://i.scdn.co/image/ab67616d0000b2737d2055190ae60ffa4c74d13c",
+                                    width: 640,
+                                },
+                                {
+                                    height: 300,
+                                    url: "#",
+                                    width: 300
+                                },
+                                {
+                                    height: 64,
+                                    url: "#",
+                                    width: 64
+                                }
+
+                            ],
+                            trackExternalIds: { isrc: "USRE19800261" }
+                        }
                     },
                     opts: {
                         userRecording: true,
@@ -412,7 +487,7 @@ class App extends React.Component {
                 <div className="App">
                     <Navigation logout={this.logout} isAuthenticated={isAuthenticated} userName={userName} />
 
-                    <Container authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onChange={this.onChange} onSearch={this.onSearch} onResultClick={this.onResultClick} playing={playing} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} queryParam={queryParam} googleId={googleId} city={city} updateLocation={this.updateLocation}/>
+                    {/* <Container authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onChange={this.onChange} onSearch={this.onSearch} onResultClick={this.onResultClick} playing={playing} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} queryParam={queryParam} googleId={googleId}  updateLocation={this.updateLocation}/> */}
                   
 
                     <Container onUserRecordingEnded={this.onUserRecordingEnded} recordUser={recordUser} userRecordEnd={this.userRecordEnd} startRecordUser={this.startRecordUser} stopRecordUser={this.stopRecordUser} authenticateUser={this.authenticateUser} isAuthenticated={isAuthenticated} onReady={this.onReady} onPauseVideo={this.onPauseVideo} onPlayVideo={this.onPlayVideo} onChange={this.onChange} onSearch={this.onSearch} onResultClick={this.onResultClick} playing={playing} searchResults={searchResults} tapeImages={tapeImages} builderImage={builderImage} selectImage={this.onSelectTapeImage} tapeLabel={tapeLabel} onLabelChange={this.onTapeLabelChange} selectedResult={selectedResult} onPassToSideA={this.onPassSongToSideA} sideA={sideA} onPassToSideB={this.onPassSongToSideB} sideB={sideB} displayImageSelector={displayImageSelector} onSaveImage={this.onSaveTapeImage} onDeckSideA={onDeckSideA} onDeckSideB={onDeckSideB} onSavePlaylist={this.onSavePlaylist} tapeBackgroundColor={tapeBackgroundColor} onDelete={this.onDeleteSong} queryParam={queryParam} googleId={googleId}/>

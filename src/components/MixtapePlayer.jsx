@@ -40,6 +40,7 @@ constructor(props){
         userName: '',
         currentPlaylistId: '',
         toggleLink: false,
+        queryResultsOfCurrentSong: {},
         location: 'New Orleans'
     }
     
@@ -92,7 +93,6 @@ componentWillMount() {
         })
         .then((response) => {
             const {data} = response;
-            
             let aVideoArray = [];
             let bVideoArray = [];
             let aTitleArray = [];
@@ -213,6 +213,8 @@ componentWillMount() {
         this.setState({
             playing: true,
         })
+        // axios.get("/search",{this.state.})
+        debugger;
     }
 
     /**
